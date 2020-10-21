@@ -1,6 +1,5 @@
 const path = require("path");
 const webpack = require("webpack");
-const Dotenv = require("dotenv-webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -18,7 +17,6 @@ module.exports = function (env, argv) {
 
     plugins: [
       new webpack.ProgressPlugin(),
-      new Dotenv({ path: "./.env.prod" }),
       new webpack.AutomaticPrefetchPlugin(),
       new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
       new webpack.SourceMapDevToolPlugin({

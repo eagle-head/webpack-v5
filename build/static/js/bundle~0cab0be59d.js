@@ -1,2 +1,0 @@
-(self.webpackChunkmy_webpack_project=self.webpackChunkmy_webpack_project||[]).push([[296],{579:function(){console.log("Hello World from your main file!")}},0,[[579,666]]]);
-//# sourceMappingURL=bundle.js.map
