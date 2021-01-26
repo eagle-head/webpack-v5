@@ -3,18 +3,20 @@ const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
-//eslint-disable-next-line
-module.exports = function (env, argv) {
+module.exports = (function () {
   return {
-    entry: {
-      bundle: "./src/index.js",
-    },
+    context: path.resolve(__dirname, "./"),
 
     mode: "production",
 
     target: "web",
+
+    entry: {
+      bundle: path.resolve(__dirname, "src"),
+    },
 
     output: {
       path: path.resolve(__dirname, "build"),
@@ -23,6 +25,7 @@ module.exports = function (env, argv) {
     },
 
     plugins: [
+      new CleanWebpackPlugin(),
       new webpack.ProgressPlugin(),
       new webpack.AutomaticPrefetchPlugin(),
       new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
@@ -32,7 +35,7 @@ module.exports = function (env, argv) {
           __dirname,
           "assets",
           "templates",
-          "index.template.html"
+          "index.template.ejs"
         ),
       }),
       new CopyPlugin({
@@ -76,42 +79,66 @@ module.exports = function (env, argv) {
     module: {
       rules: [
         {
-          test: /\.(js|jsx)$/,
-          include: path.resolve(__dirname, "src"),
-          loader: "babel-loader",
+          test: /\.(js)x?$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              cacheDirectory: true,
+              presets: ["@babel/preset-env", "@babel/preset-react"],
+            },
+          },
+        },
+        {
+          test: /\.(png|jpe?g|gif)$/i,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                name: "[name]~[contenthash:16].[ext]",
+                outputPath: "static/images/",
+              },
+            },
+          ],
+        },
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          use: ["babel-loader", "@svgr/webpack", "url-loader"],
         },
       ],
     },
 
     optimization: {
-      runtimeChunk: "single",
       minimize: true,
+      moduleIds: "hashed",
+      runtimeChunk: {
+        name: "runtime",
+      },
+      splitChunks: {
+        chunks: "all",
+        maxInitialRequests: Infinity,
+        automaticNameDelimiter: "~",
+        minSize: 0,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendor",
+          },
+        },
+      },
       minimizer: [
         new TerserPlugin({
+          test: /\.js(\?.*)?$/i,
           parallel: 4,
+          extractComments: true,
           terserOptions: {
             output: {
               comments: /@license/i,
             },
           },
-          extractComments: true,
         }),
       ],
-      splitChunks: {
-        chunks: "all",
-        minSize: 20000,
-        minRemainingSize: 0,
-        maxAsyncRequests: 30,
-        maxInitialRequests: 30,
-        automaticNameDelimiter: "~",
-        cacheGroups: {
-          defaultVendors: {
-            test: /[\\/]node_modules[\\/]/,
-            priority: -10,
-            idHint: "vendors",
-          },
-        },
-      },
     },
   };
-};
+})();

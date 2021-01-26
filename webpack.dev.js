@@ -7,8 +7,7 @@ const dotenv = require("dotenv").config({
   path: `${__dirname}/.env.development`,
 });
 
-//eslint-disable-next-line
-module.exports = function (env, argv) {
+module.exports = (function () {
   return {
     context: path.resolve(__dirname, "./"),
 
@@ -41,7 +40,7 @@ module.exports = function (env, argv) {
           __dirname,
           "assets",
           "templates",
-          "index.template.html"
+          "index.template.ejs"
         ),
       }),
       new FaviconsWebpackPlugin({
@@ -128,4 +127,4 @@ module.exports = function (env, argv) {
       minimize: false,
     },
   };
-};
+})();
