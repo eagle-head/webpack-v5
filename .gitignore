@@ -14,6 +14,7 @@
 
 # cache files
 .cache
+.eslintcache
 
 # KDE directory preferences
 .directory
