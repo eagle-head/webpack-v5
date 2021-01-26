@@ -1,27 +1,82 @@
 const path = require("path");
 const webpack = require("webpack");
+const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
+const dotenv = require("dotenv").config({
+  path: `${__dirname}/.env.development`,
+});
 
+//eslint-disable-next-line
 module.exports = function (env, argv) {
   return {
     context: path.resolve(__dirname, "./"),
 
+    mode: "development",
+
+    target: "web",
+
     entry: path.resolve(__dirname, "src", "index.js"),
 
     output: {
-      path: path.resolve(__dirname, "./build"),
-      filename: "[name]~[contenthash:10].js",
+      path: path.join(__dirname, "/build"),
+      publicPath: "/",
+      filename: "[name].js",
     },
 
     plugins: [
       new webpack.ProgressPlugin(),
       new webpack.AutomaticPrefetchPlugin(),
-      new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
-      new HtmlWebpackPlugin({
-        title: "Webpack v5",
-        template: "./public/index.ejs",
+      new webpack.HotModuleReplacementPlugin(),
+      new CopyPlugin({
+        patterns: [{ from: "./public/robots.txt", to: "build" }],
       }),
-      // new webpack.HotModuleReplacementPlugin(),
+      new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
+      new webpack.DefinePlugin({
+        "process.env": JSON.stringify(dotenv.parse),
+      }),
+      new HtmlWebpackPlugin({
+        title: "React Webpack v5",
+        template: path.resolve(
+          __dirname,
+          "assets",
+          "templates",
+          "index.template.html"
+        ),
+      }),
+      new FaviconsWebpackPlugin({
+        logo: path.resolve(__dirname, "assets", "icons", "favicon.png"),
+        cache: "./.cache",
+        prefix: "static/images/",
+        favicons: {
+          appName: "",
+          appShortName: "",
+          appDescription: "",
+          developerName: "",
+          developerURL: "",
+          dir: "auto",
+          lang: "pt-BR",
+          background: "#AAA",
+          theme_color: "#BBB",
+          display: "standalone",
+          appleStatusBarStyle: "black-translucent",
+          orientation: "portrait",
+          start_url: "./?utm_source=homescreen",
+          scope: ".",
+          version: "0.0.1",
+          logging: false,
+          icons: {
+            favicons: true,
+            android: false,
+            appleIcon: false,
+            appleStartup: false,
+            coast: false,
+            firefox: false,
+            windows: false,
+            yandex: false,
+          },
+        },
+      }),
     ],
 
     module: {
@@ -36,76 +91,41 @@ module.exports = function (env, argv) {
             },
           },
         },
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          use: ["babel-loader", "@svgr/webpack", "url-loader"],
+        },
+        {
+          test: /\.(jpe?g|png|gif)$/i,
+          exclude: /(fonts|node_modules)/,
+          use: {
+            loader: "url-loader",
+            options: {
+              limit: 50000,
+            },
+          },
+        },
       ],
     },
 
     devtool: "eval-source-map",
 
     devServer: {
-      port: process.env.DB_PORT,
       contentBase: path.join(__dirname, "build"),
-      // hot: true,
-      open: true,
-      compress: true,
       historyApiFallback: true,
-      watchContentBase: true,
+      compress: true,
+      port: Number(process.env.PORT),
+      host: process.env.HOST,
+      overlay: true,
+      hot: true,
+      open: true,
+      watchOptions: {
+        ignored: /node_modules/,
+      },
+    },
+
+    optimization: {
+      minimize: false,
     },
   };
 };
-
-// const path = require("path");
-// const webpack = require("webpack");
-// const Dotenv = require("dotenv-webpack");
-// const HtmlWebpackPlugin = require("html-webpack-plugin");
-
-// module.exports = function (env, argv) {
-//   return {
-//     entry: {
-//       bundle: "./src/index.js",
-//     },
-
-//     output: {
-//       path: path.resolve(__dirname, "build"),
-//       filename: "[name].js",
-//     },
-
-//     plugins: [
-//       new webpack.ProgressPlugin(),
-//       new Dotenv({ path: "./.env.dev" }),
-//       new webpack.AutomaticPrefetchPlugin(),
-//       new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
-//       new HtmlWebpackPlugin({
-//         title: "Webpack v5",
-//         template: "./public/index.ejs",
-//       }),
-//       new webpack.HotModuleReplacementPlugin(),
-//     ],
-
-//     module: {
-//       rules: [
-//         {
-//           test: /\.(js|jsx)$/,
-//           include: path.resolve(__dirname, "src"),
-//           loader: "babel-loader",
-//         },
-//       ],
-//     },
-
-//     devtool: "eval",
-
-//     devServer: {
-//       contentBase: path.join(__dirname, "build"),
-//       compress: true,
-//       historyApiFallback: true,
-//       hot: true,
-//       watchContentBase: true,
-//       open: true,
-//       overlay: true,
-//       host: process.env.DB_HOST,
-//       port: process.env.DB_PORT,
-//       watchOptions: {
-//         ignored: /node_modules/,
-//       },
-//     },
-//   };
-// };

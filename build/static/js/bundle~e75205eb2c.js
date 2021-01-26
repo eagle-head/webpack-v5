@@ -1,2 +1,0 @@
-(self.webpackChunkmy_webpack_project=self.webpackChunkmy_webpack_project||[]).push([[296],{860:function(e,l,n){"use strict";var t=n(294);function r(){return t.createElement("div",null,"Hello from Shared !!!")}var c=function(){return t.createElement("div",null,t.createElement("h1",null,"Hello World !"),t.createElement(r,null))};n(935).render(t.createElement(c,null),document.getElementById("root"))}},0,[[860,666,935]]]);
-//# sourceMappingURL=bundle.js.map

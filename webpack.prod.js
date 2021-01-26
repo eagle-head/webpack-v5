@@ -1,34 +1,75 @@
 const path = require("path");
 const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 
+//eslint-disable-next-line
 module.exports = function (env, argv) {
   return {
     entry: {
       bundle: "./src/index.js",
     },
 
+    mode: "production",
+
+    target: "web",
+
     output: {
       path: path.resolve(__dirname, "build"),
-      filename: "static/js/[name]~[contenthash:10].js",
+      publicPath: "/",
+      filename: "static/js/[name]~[contenthash:16].js",
     },
 
     plugins: [
       new webpack.ProgressPlugin(),
       new webpack.AutomaticPrefetchPlugin(),
       new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
-      new webpack.SourceMapDevToolPlugin({
-        filename: "static/js/[name].js.map",
-        exclude: "vendor.js",
-      }),
       new HtmlWebpackPlugin({
-        title: "Webpack v5",
-        template: "./public/index.ejs",
+        title: "React Webpack v5",
+        template: path.resolve(
+          __dirname,
+          "assets",
+          "templates",
+          "index.template.html"
+        ),
       }),
       new CopyPlugin({
         patterns: [{ from: "./public/robots.txt", to: "./" }],
+      }),
+      new FaviconsWebpackPlugin({
+        logo: path.resolve(__dirname, "assets", "icons", "favicon.png"),
+        cache: "./.cache",
+        prefix: "static/images/",
+        favicons: {
+          appName: "",
+          appShortName: "",
+          appDescription: "",
+          developerName: "",
+          developerURL: "",
+          dir: "auto",
+          lang: "pt-BR",
+          background: "#AAA",
+          theme_color: "#BBB",
+          display: "standalone",
+          appleStatusBarStyle: "black-translucent",
+          orientation: "portrait",
+          start_url: "./?utm_source=homescreen",
+          scope: ".",
+          version: "0.0.1",
+          logging: false,
+          icons: {
+            favicons: true,
+            android: false,
+            appleIcon: false,
+            appleStartup: false,
+            coast: false,
+            firefox: false,
+            windows: false,
+            yandex: false,
+          },
+        },
       }),
     ],
 

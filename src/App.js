@@ -1,13 +1,11 @@
 import React from "react";
-import Shared from "./shared";
+import { Shared } from "./shared";
 
-function App() {
+export function App() {
   return (
     <div>
-      <h1>Hello World !</h1>
+      <h1>Hello World !!</h1>
       <Shared />
     </div>
   );
 }
-
-export default App;

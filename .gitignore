@@ -12,6 +12,9 @@
 # temporary files which can be created if a process still has a handle open of a deleted file
 .fuse_hidden*
 
+# cache files
+.cache
+
 # KDE directory preferences
 .directory
 
@@ -31,6 +34,7 @@ logs
 node_modules
 bower_components
 dist
+build
 
 *.sublime*
 
