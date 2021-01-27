@@ -111,7 +111,7 @@ module.exports = (function () {
 
     optimization: {
       minimize: true,
-      moduleIds: "hashed",
+      moduleIds: "deterministic",
       runtimeChunk: {
         name: "runtime",
       },

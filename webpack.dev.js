@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const LoadablePlugin = require("@loadable/webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const dotenv = require("dotenv").config({
   path: `${__dirname}/.env.development`,
@@ -27,6 +28,7 @@ module.exports = (function () {
       new webpack.ProgressPlugin(),
       new webpack.AutomaticPrefetchPlugin(),
       new webpack.HotModuleReplacementPlugin(),
+      new LoadablePlugin({ filename: "stats.json", writeToDisk: true }),
       new CopyPlugin({
         patterns: [{ from: "./public/robots.txt", to: "build" }],
       }),

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
-import { RebelBrands } from "../assets/svg/";
+import { RebelBrands } from "../assets/svg";
 
-export function Shared() {
+export default function Shared() {
   return (
     <Fragment>
       <div>Hello from Shared !!</div>
