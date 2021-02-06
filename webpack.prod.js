@@ -5,6 +5,8 @@ const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 module.exports = (function () {
   return {
@@ -26,6 +28,7 @@ module.exports = (function () {
 
     plugins: [
       new CleanWebpackPlugin(),
+      new BundleAnalyzerPlugin(),
       new webpack.ProgressPlugin(),
       new webpack.AutomaticPrefetchPlugin(),
       new webpack.WatchIgnorePlugin({ paths: [/node_modules/] }),
@@ -46,22 +49,24 @@ module.exports = (function () {
         cache: "./.cache",
         prefix: "static/images/",
         favicons: {
-          appName: "",
-          appShortName: "",
-          appDescription: "",
-          developerName: "",
-          developerURL: "",
+          appName: null,
+          appShortName: null,
+          appDescription: null,
+          developerName: null,
+          developerURL: null,
           dir: "auto",
           lang: "pt-BR",
-          background: "#AAA",
-          theme_color: "#BBB",
+          background: "#fff",
+          theme_color: "#fff",
           display: "standalone",
           appleStatusBarStyle: "black-translucent",
           orientation: "portrait",
-          start_url: "./?utm_source=homescreen",
-          scope: ".",
+          start_url: "/?homescreen=1",
+          scope: "/",
           version: "0.0.1",
           logging: false,
+          pixel_art: false,
+          loadManifestWithCredentials: false,
           icons: {
             favicons: true,
             android: false,
